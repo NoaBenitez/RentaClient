@@ -11,6 +11,9 @@ interface DashboardStatsProps {
   purchaseArticlesCount: number;
 }
 
+const fmt = (n: number, decimals = 2) =>
+  n.toLocaleString("fr-FR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+
 export const DashboardStats = ({
   results,
   interventionCount,
@@ -26,78 +29,78 @@ export const DashboardStats = ({
     : results.marginRate;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {/* Montant HT */}
-      <Card className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:shadow-lg transition-shadow">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-muted-foreground font-medium">Montant HT</span>
-          <Euro className="w-4 h-4 text-primary" />
+      <Card className="p-3 bg-gradient-to-br from-primary/10 to-primary/5 border-primary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-stagger-1">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Montant HT</span>
+          <Euro className="w-3.5 h-3.5 text-primary" />
         </div>
-        <p className="text-2xl font-bold text-primary">{results.totalHTBilled.toFixed(2)}€</p>
+        <p className="text-xl font-bold text-primary tabular-nums">{fmt(results.totalHTBilled)} €</p>
         <div className="flex items-center gap-1 mt-1">
           <FileText className="w-3 h-3 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">{billingItemsCount} articles</span>
+          <span className="text-[10px] text-muted-foreground">{billingItemsCount} articles</span>
         </div>
       </Card>
 
       {/* Coût Total */}
-      <Card className="p-4 bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/20 hover:shadow-lg transition-shadow">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-muted-foreground font-medium">Coût total</span>
-          <Euro className="w-4 h-4 text-secondary" />
+      <Card className="p-3 bg-gradient-to-br from-secondary/10 to-secondary/5 border-secondary/20 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-stagger-2">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Coût total</span>
+          <Euro className="w-3.5 h-3.5 text-secondary" />
         </div>
-        <p className="text-2xl font-bold text-secondary">{results.totalCost.toFixed(2)}€</p>
+        <p className="text-xl font-bold text-secondary tabular-nums">{fmt(results.totalCost)} €</p>
         <div className="flex items-center gap-1 mt-1">
           <Clock className="w-3 h-3 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">{totalHours.toFixed(1)}h travaillées</span>
+          <span className="text-[10px] text-muted-foreground">{fmt(totalHours, 1)}h travaillées</span>
         </div>
       </Card>
 
       {/* Interventions */}
-      <Card className="p-4 bg-muted/50 hover:shadow-lg transition-shadow">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-xs text-muted-foreground font-medium">Interventions</span>
-          <Clock className="w-4 h-4 text-muted-foreground" />
+      <Card className="p-3 bg-muted/50 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-stagger-3">
+        <div className="flex items-center justify-between mb-1.5">
+          <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">Interventions</span>
+          <Clock className="w-3.5 h-3.5 text-muted-foreground" />
         </div>
-        <p className="text-2xl font-bold">{interventionCount}</p>
+        <p className="text-xl font-bold tabular-nums">{interventionCount}</p>
         <div className="flex items-center gap-1 mt-1">
           <Package className="w-3 h-3 text-muted-foreground" />
-          <span className="text-xs text-muted-foreground">{purchaseArticlesCount} achats</span>
+          <span className="text-[10px] text-muted-foreground">{purchaseArticlesCount} achats</span>
         </div>
       </Card>
 
       {/* Marge */}
       <Card className={cn(
-        "p-4 hover:shadow-lg transition-shadow",
-        isPositive 
-          ? "bg-gradient-to-br from-success/20 to-success/10 border-success/30" 
+        "p-3 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 animate-stagger-4",
+        isPositive
+          ? "bg-gradient-to-br from-success/20 to-success/10 border-success/30"
           : "bg-gradient-to-br from-destructive/20 to-destructive/10 border-destructive/30"
       )}>
-        <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center justify-between mb-1.5">
           <span className={cn(
-            "text-xs font-medium",
+            "text-[10px] font-medium uppercase tracking-wider",
             isPositive ? "text-success" : "text-destructive"
           )}>
             {hasNetMargin ? "Marge nette" : "Marge brute"}
           </span>
           {isPositive ? (
-            <TrendingUp className="w-4 h-4 text-success" />
+            <TrendingUp className="w-3.5 h-3.5 text-success" />
           ) : (
-            <TrendingDown className="w-4 h-4 text-destructive" />
+            <TrendingDown className="w-3.5 h-3.5 text-destructive" />
           )}
         </div>
         <p className={cn(
-          "text-2xl font-bold",
+          "text-xl font-bold tabular-nums",
           isPositive ? "text-success" : "text-destructive"
         )}>
-          {displayMargin.toFixed(2)}€
+          {fmt(displayMargin)} €
         </p>
         <div className="flex items-center gap-1 mt-1">
           <span className={cn(
-            "text-xs font-medium",
+            "text-[10px] font-medium tabular-nums",
             isPositive ? "text-success" : "text-destructive"
           )}>
-            {displayMarginRate.toFixed(1)}%
+            {fmt(displayMarginRate, 1)} %
           </span>
         </div>
       </Card>

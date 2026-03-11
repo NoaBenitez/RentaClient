@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
-import logoPSL from "@/assets/logopsl.jpg";
+import logoPSL from "@/assets/logopsl_-_original_-_Copie-removebg-preview.png";
 import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
@@ -506,34 +506,47 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
     ? financialResults.netMargin
     : financialResults.grossMargin;
 
+  const formatNumber = (n: number, decimals = 0) =>
+    n.toLocaleString("fr-FR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-background via-background to-muted/20">
 
       {/* STICKY HEADER */}
-      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-sm border-b shadow-sm">
+      <header className="shrink-0 z-40 bg-background/95 backdrop-blur-sm border-b shadow-sm">
         <div className="container mx-auto px-4 max-w-[1600px]">
-          <div className="flex items-center justify-between h-16 gap-4">
+          <div className="flex items-center justify-between h-14 gap-4">
             {/* Logo + Title */}
-            <div className="flex items-center gap-3 shrink-0">
-              <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center p-1.5 shadow-sm">
+            <div className="flex items-center gap-3 shrink-0 animate-slide-in-left">
+              <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center p-1 shadow-sm hover:scale-110 transition-transform duration-300">
                 <img src={logoPSL} alt="PSL Sécurité Incendie" className="w-full h-full object-contain" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-foreground leading-tight">Analyse de Rentabilité</h1>
-                <p className="text-xs text-muted-foreground">Tableau de bord de profitabilité client</p>
+                <h1 className="text-base font-bold text-foreground leading-tight">PSL - Rentabilité Client</h1>
+                <p className="text-[10px] text-muted-foreground">Tableau de bord de profitabilité</p>
               </div>
             </div>
 
             {/* KPI mini-résumé */}
             {hasSelection && (
-              <div className="hidden md:flex items-center gap-3 text-sm flex-1 justify-center">
-                <span className="font-bold text-primary">{financialResults.totalHTBilled.toFixed(0)}€ HT</span>
-                <span className="text-muted-foreground">·</span>
-                <span className="text-muted-foreground">{financialResults.totalCost.toFixed(0)}€ coût</span>
-                <span className="text-muted-foreground">·</span>
-                <span className={cn("font-semibold", displayMarginForHeader >= 0 ? "text-success" : "text-destructive")}>
-                  {displayMarginForHeader.toFixed(0)}€ marge
-                </span>
+              <div className="hidden md:flex items-center gap-4 text-sm flex-1 justify-center animate-fade-in">
+                <div className="flex items-center gap-1.5 bg-primary/10 px-3 py-1 rounded-full">
+                  <span className="text-[10px] text-primary/70 uppercase font-medium">CA HT</span>
+                  <span className="font-bold text-primary tabular-nums">{formatNumber(financialResults.totalHTBilled)}€</span>
+                </div>
+                <div className="flex items-center gap-1.5 bg-muted px-3 py-1 rounded-full">
+                  <span className="text-[10px] text-muted-foreground uppercase font-medium">Coût</span>
+                  <span className="font-semibold tabular-nums">{formatNumber(financialResults.totalCost)}€</span>
+                </div>
+                <div className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-full",
+                  displayMarginForHeader >= 0 ? "bg-success/10" : "bg-destructive/10"
+                )}>
+                  <span className={cn("text-[10px] uppercase font-medium", displayMarginForHeader >= 0 ? "text-success/70" : "text-destructive/70")}>Marge</span>
+                  <span className={cn("font-bold tabular-nums", displayMarginForHeader >= 0 ? "text-success" : "text-destructive")}>
+                    {formatNumber(displayMarginForHeader)}€
+                  </span>
+                </div>
               </div>
             )}
 
@@ -541,7 +554,7 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
             {hasData && (
               <Sheet>
                 <SheetTrigger asChild>
-                  <Button variant="outline" size="sm" className="gap-2 shrink-0">
+                  <Button variant="outline" size="sm" className="gap-2 shrink-0 hover:bg-primary/10 transition-colors">
                     <Settings className="w-4 h-4" />
                     <span className="hidden sm:inline">Paramètres</span>
                   </Button>
@@ -576,10 +589,10 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
         </div>
       </header>
 
-      <div className="container mx-auto px-4 max-w-[1600px]">
+      <div className="container mx-auto px-4 max-w-[1600px] flex flex-col flex-1 min-h-0 overflow-hidden">
 
         {/* SETUP STRIP */}
-        <div className="py-4 border-b">
+        <div className="py-3 border-b shrink-0">
           <div className="flex items-center gap-3 flex-wrap">
 
             {/* Step 1: Interventions */}
@@ -742,11 +755,11 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
           </div>
         </div>
 
-        {/* FILTER BAR - sticky below header */}
+        {/* FILTER BAR */}
         {hasData && (
-          <div className="sticky top-16 z-30 bg-background/95 backdrop-blur-sm border-b">
+          <div className="shrink-0 z-30 bg-background/95 backdrop-blur-sm border-b">
             {/* Toggle row - toujours visible */}
-            <div className="flex items-center justify-between py-2">
+            <div className="flex items-center justify-between py-1.5">
               <div className="flex items-center gap-2 text-xs text-muted-foreground">
                 {selectedClient && <span className="font-medium text-foreground">{selectedClient}</span>}
                 {startDate && <span>{startDate.toLocaleDateString('fr-FR')}</span>}
@@ -766,7 +779,7 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
 
             {/* Filtres repliables */}
             {isFilterBarVisible && (
-              <div className="flex items-end gap-3 flex-wrap pb-3">
+              <div className="flex items-end gap-3 flex-wrap pb-2 animate-slide-down">
                 <div className="min-w-[180px]">
                   <ClientSelector
                     clients={uniqueClients}
@@ -814,11 +827,11 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
 
         {/* MAIN LAYOUT: Sidebar + Tabs */}
         {hasSelection && (
-          <div className="flex flex-col lg:flex-row gap-6 py-6">
+          <div className="flex flex-col lg:flex-row gap-4 py-4 flex-1 min-h-0 overflow-hidden animate-fade-in">
 
             {/* SIDEBAR KPI */}
-            <div className="lg:w-[300px] shrink-0">
-              <div className="lg:sticky lg:top-[120px] lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto">
+            <div className="lg:w-[280px] shrink-0">
+              <div className="lg:max-h-full lg:overflow-y-auto">
                 <KpiSidebar
                   results={financialResults}
                   interventionCount={interventionStats.count}
@@ -830,7 +843,7 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
             </div>
 
             {/* TABS MAIN CONTENT */}
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 overflow-y-auto">
               <Tabs defaultValue="billing">
                 <TabsList className="mb-4 w-full justify-start h-auto flex-wrap gap-1">
                   <TabsTrigger value="billing" className="gap-1.5">
@@ -914,12 +927,12 @@ const [interventionsFileName, setInterventionsFileName] = useState<string>("");
 
         {/* EMPTY STATE */}
         {!hasData && (
-          <div className="text-center py-24 animate-fade-in">
-            <div className="w-40 h-40 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 mx-auto mb-6 flex items-center justify-center p-6 shadow-lg animate-scale-in">
+          <div className="flex-1 flex flex-col items-center justify-center animate-fade-in">
+            <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary/20 to-primary/5 mx-auto mb-6 flex items-center justify-center p-5 shadow-lg animate-float">
               <img src={logoPSL} alt="PSL Sécurité Incendie" className="w-full h-full object-contain" />
             </div>
-            <h3 className="text-2xl font-semibold mb-3">Commencez votre analyse</h3>
-            <p className="text-muted-foreground max-w-md mx-auto text-lg">
+            <h3 className="text-2xl font-semibold mb-2 animate-slide-up">Commencez votre analyse</h3>
+            <p className="text-muted-foreground max-w-md mx-auto text-base animate-slide-up" style={{ animationDelay: "0.1s" }}>
               Importez vos fichiers Excel pour démarrer l'analyse de rentabilité
             </p>
           </div>

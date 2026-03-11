@@ -13,6 +13,9 @@ interface KpiSidebarProps {
   purchaseArticlesCount: number;
 }
 
+const fmt = (n: number, decimals = 2) =>
+  n.toLocaleString("fr-FR", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+
 export const KpiSidebar = ({
   results,
   interventionCount,
@@ -29,7 +32,7 @@ export const KpiSidebar = ({
   const progressValue = Math.max(0, Math.min(100, displayMarginRate));
 
   const costs = [
-    { label: "Main d'œuvre", value: results.interventionCost, icon: Wrench },
+    { label: "Main d'oeuvre", value: results.interventionCost, icon: Wrench },
     { label: "Déplacement", value: results.travelCost, icon: Briefcase },
     { label: "Véhicule", value: results.vehicleCost, icon: Car },
     { label: "Frais financier", value: results.financialFee, icon: Percent },
@@ -37,47 +40,47 @@ export const KpiSidebar = ({
   ];
 
   return (
-    <Card className="border-2">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-base font-semibold flex items-center gap-2">
+    <Card className="border-2 animate-slide-in-left">
+      <CardHeader className="pb-2 pt-4 px-4">
+        <CardTitle className="text-sm font-semibold flex items-center gap-2">
           {isPositive ? (
-            <TrendingUp className="w-4 h-4 text-success" />
+            <TrendingUp className="w-4 h-4 text-success animate-pulse-subtle" />
           ) : (
-            <TrendingDown className="w-4 h-4 text-destructive" />
+            <TrendingDown className="w-4 h-4 text-destructive animate-pulse-subtle" />
           )}
           Résultats financiers
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-3 px-4 pb-4">
         {/* Montant HT */}
-        <div className="p-4 rounded-xl bg-primary/10 border border-primary/20">
-          <p className="text-xs text-primary font-medium uppercase tracking-wide mb-1">Montant HT facturé</p>
-          <p className="text-3xl font-bold text-primary">{results.totalHTBilled.toFixed(2)}€</p>
-          <p className="text-xs text-muted-foreground mt-1">
+        <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 hover:bg-primary/15 transition-colors duration-300">
+          <p className="text-[10px] text-primary font-medium uppercase tracking-wider mb-0.5">Montant HT facturé</p>
+          <p className="text-2xl font-bold text-primary tabular-nums">{fmt(results.totalHTBilled)} €</p>
+          <p className="text-[10px] text-muted-foreground mt-0.5">
             {billingItemsCount} article{billingItemsCount !== 1 ? "s" : ""} sélectionné{billingItemsCount !== 1 ? "s" : ""}
           </p>
         </div>
 
         {/* Marge avec progress bar */}
         <div className={cn(
-          "p-4 rounded-xl border-2",
+          "p-3 rounded-xl border-2 hover:shadow-md transition-all duration-300",
           isPositive ? "bg-success/10 border-success/30" : "bg-destructive/10 border-destructive/30"
         )}>
           <p className={cn(
-            "text-xs font-medium uppercase tracking-wide mb-1",
+            "text-[10px] font-medium uppercase tracking-wider mb-0.5",
             isPositive ? "text-success" : "text-destructive"
           )}>
             {marginLabel}
           </p>
-          <p className={cn("text-3xl font-bold mb-3", isPositive ? "text-success" : "text-destructive")}>
-            {displayMargin.toFixed(2)}€
+          <p className={cn("text-2xl font-bold mb-2 tabular-nums", isPositive ? "text-success" : "text-destructive")}>
+            {fmt(displayMargin)} €
           </p>
           <Progress
             value={progressValue}
-            className={cn("h-2 mb-2", !isPositive && "[&>div]:bg-destructive")}
+            className={cn("h-1.5 mb-1.5", !isPositive && "[&>div]:bg-destructive")}
           />
-          <p className={cn("text-sm font-semibold", isPositive ? "text-success" : "text-destructive")}>
-            {displayMarginRate.toFixed(1)}%
+          <p className={cn("text-sm font-semibold tabular-nums", isPositive ? "text-success" : "text-destructive")}>
+            {fmt(displayMarginRate, 1)} %
           </p>
         </div>
 
@@ -85,27 +88,27 @@ export const KpiSidebar = ({
 
         {/* Coût total */}
         <div className="flex justify-between items-center">
-          <span className="text-sm font-semibold">Coût total</span>
-          <span className="font-bold text-lg tabular-nums">{results.totalCost.toFixed(2)}€</span>
+          <span className="text-xs font-semibold">Coût total</span>
+          <span className="font-bold text-base tabular-nums">{fmt(results.totalCost)} €</span>
         </div>
 
         {/* Détail des coûts */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {costs.map(({ label, value, icon: Icon }) => (
-            <div key={label} className="flex justify-between items-center text-sm">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <Icon className="w-3 h-3 shrink-0" />
+            <div key={label} className="flex justify-between items-center text-xs group hover:bg-muted/50 rounded-md px-1.5 py-0.5 transition-colors">
+              <div className="flex items-center gap-1.5 text-muted-foreground">
+                <Icon className="w-3 h-3 shrink-0 group-hover:text-primary transition-colors" />
                 <span>{label}</span>
               </div>
-              <span className="font-medium tabular-nums">{value.toFixed(2)}€</span>
+              <span className="font-medium tabular-nums">{fmt(value)} €</span>
             </div>
           ))}
           {results.hasPurchaseData && results.purchaseArticlesCost !== undefined && (
             <>
               <Separator className="my-1" />
-              <div className="flex justify-between items-center text-sm">
+              <div className="flex justify-between items-center text-xs px-1.5">
                 <span className="text-muted-foreground">Coût achats</span>
-                <span className="font-medium tabular-nums">{results.purchaseArticlesCost.toFixed(2)}€</span>
+                <span className="font-medium tabular-nums">{fmt(results.purchaseArticlesCost)} €</span>
               </div>
             </>
           )}
@@ -115,20 +118,20 @@ export const KpiSidebar = ({
 
         {/* Stats interventions */}
         <div className="grid grid-cols-2 gap-2">
-          <div className="p-3 rounded-lg bg-muted text-center">
-            <p className="text-2xl font-bold">{interventionCount}</p>
-            <p className="text-xs text-muted-foreground">interventions</p>
+          <div className="p-2.5 rounded-lg bg-muted text-center hover:bg-muted/80 transition-colors">
+            <p className="text-xl font-bold tabular-nums">{interventionCount}</p>
+            <p className="text-[10px] text-muted-foreground">interventions</p>
           </div>
-          <div className="p-3 rounded-lg bg-muted text-center">
-            <p className="text-2xl font-bold">
-              {totalHours.toFixed(1)}<span className="text-sm font-medium">h</span>
+          <div className="p-2.5 rounded-lg bg-muted text-center hover:bg-muted/80 transition-colors">
+            <p className="text-xl font-bold tabular-nums">
+              {fmt(totalHours, 1)}<span className="text-xs font-medium">h</span>
             </p>
-            <p className="text-xs text-muted-foreground">total heures</p>
+            <p className="text-[10px] text-muted-foreground">total heures</p>
           </div>
         </div>
 
         {!results.hasPurchaseData && (
-          <p className="text-xs text-muted-foreground text-center italic border border-dashed rounded-lg p-2">
+          <p className="text-[10px] text-muted-foreground text-center italic border border-dashed rounded-lg p-2">
             Importez les articles pour calculer la marge nette
           </p>
         )}
