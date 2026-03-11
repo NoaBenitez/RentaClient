@@ -1,7 +1,0 @@
-project_id = "ngvdameixpyxfegzeeap"
-
-[functions.match-interventions]
-verify_jwt = false
-
-[functions.match-purchase-articles]
-verify_jwt = false
